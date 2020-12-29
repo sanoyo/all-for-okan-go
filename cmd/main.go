@@ -3,6 +3,8 @@ package main
 import (
 	"net/http"
 	"os"
+
+	"github.com/sanoyo/all-for-okan-go/api/infra/persistence"
 )
 
 const (
@@ -20,14 +22,14 @@ func main() {
 		return
 	}
 
-	topicPersistence := usecase.NewTopicPersistence()
+	topicPersistence := persistence.NewTopicsPersistence()
 	topicUseCase := usecase.NewTopicUseCase(topicPersistence)
 	topicHandler := handler.NewTopicHandler(topicUseCase)
 
 	router := newRouter()
 
 	// BHI保守ユーザー用エンドポイント
-	router.Route("/bhi/v1", func(r chi.Router) {
+	router.Route("/topic", func(r chi.Router) {
 		r.Get("/topic/{topicId}", topicHandler.Get)
 		r.Post("/topic/create", topicHandler.Create)
 	})
