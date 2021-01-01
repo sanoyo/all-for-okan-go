@@ -2,46 +2,34 @@ package persistence
 
 import (
 	"github.com/jmoiron/sqlx"
+	"github.com/sanoyo/all-for-okan-go/api/domain/model"
 )
 
-type topicsPersistencePostgres struct{}
-
-func NewTopicsPersistence() repository.TopicsRepository {
-	return &topicsPersistencePostgres{}
+type topicsPersistence struct {
+	DB *sqlx.DB
 }
 
-type accountsAdminPersistencePostgres struct {
-	db *sqlx.DB
+func NewTopicsPersistence(db *sqlx.DB) *topicsPersistence {
+	return &topicsPersistence{DB: db}
 }
 
-func (app topicsPersistencePostgres) FetchAccount(userID int, externalID string) (*model.Account, error) {
-	const selectAccountSQL = `
+func (app *topicsPersistence) FetchTopics() (*[]model.Topic, error) {
+	const sql = `
     SELECT
         id
-      , user_id
-      , provider_code
+      , title
+	  , description
+	  , created_at
+	  , updated_at
     FROM
-        accounts
+        topics
     `
 
-	var account model.Account
-	err := db.With(func(conn db.Conn) error {
-		return conn.QueryRow(selectAccountSQL, userID, externalID).Scan(
-			&account.ID,
-			&account.UserID,
-			&account.ProviderCode,
-			&account.UID,
-			&account.UName,
-		)
-	})
-
-	if errors.Cause(err) == db.ErrNoRows {
-		return nil, nil
-	}
-
+	var topic []model.Topic
+	err := app.DB.Select(&topic, sql)
 	if err != nil {
-		return nil, errors.WithStack(err)
+		return nil, err
 	}
 
-	return &account, nil
+	return &topic, nil
 }

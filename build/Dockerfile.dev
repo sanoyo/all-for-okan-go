@@ -1,0 +1,9 @@
+FROM golang:1.14
+
+WORKDIR /go/src/app
+COPY . .
+
+RUN go get -d -v ./...
+RUN GOOS=linux GOARCH=amd64 go build main.go
+
+CMD ["./main"]
