@@ -7,6 +7,7 @@ import (
 
 type TopicsUseCase interface {
 	FetchTopics() (*[]model.Topic, error)
+	FetchTopic(topicID int) (*model.Topic, error)
 }
 
 type topicsUseCaseImpl struct {
@@ -26,4 +27,13 @@ func (a *topicsUseCaseImpl) FetchTopics() (*[]model.Topic, error) {
 	}
 
 	return topics, nil
+}
+
+func (a *topicsUseCaseImpl) FetchTopic(topicID int) (*model.Topic, error) {
+	topic, err := a.topicRepo.FetchTopic(topicID)
+	if err != nil {
+		return nil, err
+	}
+
+	return topic, nil
 }

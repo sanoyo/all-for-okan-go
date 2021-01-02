@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sanoyo/all-for-okan-go/api/usecase"
@@ -9,6 +10,7 @@ import (
 
 type TopicsHandler interface {
 	Get(*gin.Context)
+	GetByID(*gin.Context)
 }
 
 type topicsHandler struct {
@@ -23,6 +25,22 @@ func NewTopicsHandler(useCase usecase.TopicsUseCase) TopicsHandler {
 
 func (a *topicsHandler) Get(c *gin.Context) {
 	topics, err := a.useCase.FetchTopics()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"status": "failed", "message": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, topics)
+}
+
+func (a *topicsHandler) GetByID(c *gin.Context) {
+	topicID, err := strconv.Atoi(c.Param("topicID"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"status": "failed", "message": err.Error()})
+		return
+	}
+
+	topics, err := a.useCase.FetchTopic(topicID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"status": "failed", "message": err.Error()})
 		return

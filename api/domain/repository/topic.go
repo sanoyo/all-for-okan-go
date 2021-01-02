@@ -6,4 +6,5 @@ import (
 
 type TopicsRepository interface {
 	FetchTopics() (*[]model.Topic, error)
+	FetchTopic(topicID int) (*model.Topic, error)
 }

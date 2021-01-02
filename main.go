@@ -20,6 +20,7 @@ func main() {
 	// r.Use(middleware.CORSHeaders())
 
 	r.GET("/topics", func(c *gin.Context) { topicHandler.Get(c) })
+	r.GET("/topic/:topicID", func(c *gin.Context) { topicHandler.GetByID(c) })
 
 	if err := r.Run(); err != nil {
 		log.Fatalf("main error: %s", err.Error())
