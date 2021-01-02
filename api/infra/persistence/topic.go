@@ -1,6 +1,8 @@
 package persistence
 
 import (
+	"fmt"
+
 	"github.com/jmoiron/sqlx"
 	"github.com/sanoyo/all-for-okan-go/api/domain/model"
 )
@@ -16,7 +18,8 @@ func NewTopicsPersistence(db *sqlx.DB) *topicsPersistence {
 func (app *topicsPersistence) FetchTopics() (*[]model.Topic, error) {
 	const sql = `
     SELECT
-        id
+		topic_id
+	  , user_id
       , title
 	  , description
 	  , created_at
@@ -30,6 +33,8 @@ func (app *topicsPersistence) FetchTopics() (*[]model.Topic, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	fmt.Println(&topic)
 
 	return &topic, nil
 }
