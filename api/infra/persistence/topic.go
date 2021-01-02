@@ -1,8 +1,6 @@
 package persistence
 
 import (
-	"fmt"
-
 	"github.com/jmoiron/sqlx"
 	"github.com/sanoyo/all-for-okan-go/api/domain/model"
 )
@@ -34,12 +32,10 @@ func (app *topicsPersistence) FetchTopics() (*[]model.Topic, error) {
 		return nil, err
 	}
 
-	fmt.Println(&topic)
-
 	return &topic, nil
 }
 
-func (app *topicsPersistence) FetchTopic(topicID int) (*model.Topic, error) {
+func (app *topicsPersistence) FetchTopic(topicID uint) (*model.Topic, error) {
 	const sql = `
     SELECT
         topic_id,
@@ -49,13 +45,13 @@ func (app *topicsPersistence) FetchTopic(topicID int) (*model.Topic, error) {
         created_at,
         updated_at
     FROM
-		topics
-	WHERE
-	    topics.topic_id = ?
+        topics
+    WHERE
+        topics.topic_id = ?
     `
 
 	var topic model.Topic
-	err := app.DB.Select(&topic, sql)
+	err := app.DB.Get(&topic, sql, topicID)
 	if err != nil {
 		return nil, err
 	}

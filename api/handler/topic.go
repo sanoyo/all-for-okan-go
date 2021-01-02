@@ -34,17 +34,19 @@ func (a *topicsHandler) Get(c *gin.Context) {
 }
 
 func (a *topicsHandler) GetByID(c *gin.Context) {
-	topicID, err := strconv.Atoi(c.Param("topicID"))
+	topicIDInt, err := strconv.Atoi(c.Param("topicID"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "failed", "message": err.Error()})
 		return
 	}
 
-	topics, err := a.useCase.FetchTopic(topicID)
+	topicID := uint(topicIDInt)
+
+	topic, err := a.useCase.FetchTopic(topicID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"status": "failed", "message": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, topics)
+	c.JSON(http.StatusOK, topic)
 }
