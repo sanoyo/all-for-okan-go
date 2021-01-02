@@ -19,12 +19,6 @@ services:
           - PORT=80
       depends_on:
           - mysql
-    #   entrypoint:
-    #       - dockerize
-    #       - -timeout
-    #       - 60s
-    #       - -wait
-    #       - tcp://mysql:3306
       command: ./main
   mysql:
       image: mysql:5.6
