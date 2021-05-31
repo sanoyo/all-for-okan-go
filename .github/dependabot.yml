@@ -1,0 +1,9 @@
+version: 2
+updates:
+  - package-ecosystem: "mod"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      time: "14:00"
+      timezone: "Asia/Tokyo"
+    target-branch: "main"
