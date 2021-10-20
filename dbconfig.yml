@@ -1,10 +1,10 @@
 development:
     dialect: mysql
     dir: db/migrations
-    datasource: user_name:password@tcp(127.0.0.1)/dbname?charset=utf8mb4&collation=utf8mb4_general_ci&parseTime=true
+    datasource: root:@tcp(127.0.0.1:3307)/dev?charset=utf8mb4&collation=utf8mb4_general_ci&parseTime=true
 
 production:
-    dialect: postgres
-    dir: migrations/postgres
+    dialect: mysql
+    dir: migrations/mysql
     datasource: dbname=myapp sslmode=disable
     table: migrations
