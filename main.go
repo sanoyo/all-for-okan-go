@@ -1,17 +1,22 @@
 package main
 
 import (
-	"github.com/gin-contrib/cors"
-	"github.com/gofiber/fiber"
+	"github.com/gofiber/fiber/v2"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
 func main() {
+	_, err := gorm.Open(mysql.Open("root:root@tcp(db:3306)/ambassador"), &gorm.Config{})
+	if err != nil {
+		panic("Could not connect with the database!")
+	}
 
 	app := fiber.New()
-
-	app.Use(cors.New(cors.Config{
-		AllowCredentials: true,
-	}))
+	app.Get("/", func(c *fiber.Ctx) error {
+		msg := "hello"
+		return c.SendString(msg)
+	})
 
 	app.Listen(":8000")
 }
