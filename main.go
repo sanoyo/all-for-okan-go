@@ -11,10 +11,6 @@ func main() {
 	database.AutoMigrate()
 
 	app := fiber.New()
-	// app.Get("/", func(c *fiber.Ctx) error {
-	// 	msg := "hello"
-	// 	return c.SendString(msg)
-	// })
 	routes.Setup(app)
 
 	app.Listen(":8000")

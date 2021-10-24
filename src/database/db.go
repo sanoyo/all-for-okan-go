@@ -1,7 +1,7 @@
 package database
 
 import (
-	"github.com/sanoyo/all-for-okan-go/src/model"
+	"github.com/sanoyo/all-for-okan-go/src/models"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -17,5 +17,5 @@ func Connect() {
 }
 
 func AutoMigrate() {
-	DB.AutoMigrate(model.User{})
+	DB.AutoMigrate(models.User{})
 }
