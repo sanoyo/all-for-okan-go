@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"strconv"
 	"time"
 
@@ -88,7 +87,6 @@ func Login(c *fiber.Ctx) error {
 
 func User(c *fiber.Ctx) error {
 	id, _ := middleware.GetUserInfo(c)
-	fmt.Println(id)
 
 	var user models.User
 	database.DB.Where("id = ?", id).First(&user)
@@ -108,4 +106,45 @@ func Logout(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{
 		"message": "success",
 	})
+}
+
+func UpdateProfile(c *fiber.Ctx) error {
+	var data map[string]string
+	if err := c.BodyParser(&data); err != nil {
+		return err
+	}
+
+	id, _ := middleware.GetUserInfo(c)
+	user := models.User{
+		Id:           id,
+		FirstName:    data["first_name"],
+		LastName:     data["last_name"],
+		Email:        data["email"],
+		IsAmbassador: false,
+	}
+	database.DB.Model(&user).Updates(&user)
+
+	return c.JSON(user)
+}
+
+func UpdatePasword(c *fiber.Ctx) error {
+	var data map[string]string
+	if err := c.BodyParser(&data); err != nil {
+		return err
+	}
+
+	if data["password"] != data["password_confirm"] {
+		c.Status(400)
+		return c.JSON(fiber.Map{
+			"message": "passwprd is mismatched",
+		})
+	}
+
+	id, _ := middleware.GetUserInfo(c)
+	user := models.User{
+		Id: id,
+	}
+	user.SetPassword(data["password"])
+
+	return c.JSON(user)
 }
