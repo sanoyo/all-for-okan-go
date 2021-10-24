@@ -3,6 +3,7 @@ package routes
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/sanoyo/all-for-okan-go/src/controllers"
+	"github.com/sanoyo/all-for-okan-go/src/middleware"
 )
 
 func Setup(app *fiber.App) {
@@ -10,5 +11,8 @@ func Setup(app *fiber.App) {
 	admin := api.Group("admin")
 	admin.Post("register", controllers.Register)
 	admin.Post("login", controllers.Login)
-	admin.Get("user", controllers.User)
+
+	adminAuthenticated := admin.Use(middleware.IsAuthenticated)
+	adminAuthenticated.Get("user", controllers.User)
+	adminAuthenticated.Post("logout", controllers.Logout)
 }

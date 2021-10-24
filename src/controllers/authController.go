@@ -1,12 +1,14 @@
 package controllers
 
 import (
+	"fmt"
 	"strconv"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
 	"github.com/sanoyo/all-for-okan-go/src/database"
+	"github.com/sanoyo/all-for-okan-go/src/middleware"
 	"github.com/sanoyo/all-for-okan-go/src/models"
 )
 
@@ -85,21 +87,25 @@ func Login(c *fiber.Ctx) error {
 }
 
 func User(c *fiber.Ctx) error {
-	cookie := c.Cookies("jwt")
-
-	token, err := jwt.ParseWithClaims(cookie, &jwt.StandardClaims{}, func(t *jwt.Token) (interface{}, error) {
-		return []byte("secret"), nil
-	})
-	if err != nil || token.Valid {
-		c.Status(fiber.StatusUnauthorized)
-		c.JSON(fiber.Map{
-			"message": "unauthorized",
-		})
-	}
-	payload := token.Claims.(*jwt.StandardClaims)
+	id, _ := middleware.GetUserInfo(c)
+	fmt.Println(id)
 
 	var user models.User
-	database.DB.Where("id = ?", payload.Subject).First(&user)
+	database.DB.Where("id = ?", id).First(&user)
 
 	return c.JSON(user)
+}
+
+func Logout(c *fiber.Ctx) error {
+	cookie := fiber.Cookie{
+		Name:     "jwt",
+		Value:    "",
+		Expires:  time.Now().Add(-time.Hour),
+		HTTPOnly: true,
+	}
+	c.Cookie(&cookie)
+
+	return c.JSON(fiber.Map{
+		"message": "success",
+	})
 }
